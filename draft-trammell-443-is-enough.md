@@ -41,18 +41,15 @@ informative:
 
 --- abstract
 
-RFC 7605 provides guidance on the use of port numbers and the criteria
-for new port assignments, including a test for whether a proposed service
-is distinct from an existing service. RFC 7605 section 7.1 notes that
-"an automated system that happens to use HTTP framing -- but is not
-primarily accessed by a browser -- might be a new service." In practice,
-this sentence has become the opening that applicants for new port
-assignments reach for when their service is an HTTP-based API. This
-document clarifies the application of the RFC 7605 section 7.1
-distinctness test to HTTP-based services, in light of HTTP's evolution
-since 2015 into a general-purpose application transport substrate, and
-provides guidance to applicants and reviewers on when an HTTP-based
-service qualifies for a new port assignment and when it does not.
+{{RFC7605}} provides guidance on the use of port numbers and the criteria for
+new port assignments, including a test for whether a proposed service is
+distinct from an existing service. It gives the example that "an automated
+system that happens to use HTTP framing -- but is not primarily accessed by a
+browser -- might be a new service." It also might not. This document clarifies
+the application of the RFC 7605 distinctness test to HTTP-based services, in
+light of HTTP's evolution since 2015 into a general-purpose application
+transport substrate, and provides guidance to applicants and reviewers on when
+an HTTP-based service qualifies for a new port assignment and when it does not.
 
 --- middle
 
@@ -152,6 +149,15 @@ Three cases:
    the combined service cannot be fully accessed by any unmodified HTTP
    client. The non-HTTP component must be implemented and specified, not
    merely claimed.
+
+   An important corollary: when a protocol is primarily non-HTTP (e.g., a
+   UDP or SCTP protocol) and carries a REST API as a management or
+   control bolt-on over the same port, the REST surface does not disqualify
+   the registration. Denying the port in such a case would force the most
+   natural client behavior -- connecting to the well-known port -- to be
+   squatting, which is contrary to the intent of RFC 7605 §7.8. The
+   registration is for the combined service; the REST component follows
+   the port, not the other way around.
 
 3. The service requires an ALPN identifier not already registered -- in
    which case the right registration is in the IANA TLS ALPN Protocol IDs
