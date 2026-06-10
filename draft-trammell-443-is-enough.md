@@ -61,16 +61,16 @@ including a distinctness test in Section 7.1: a new service merits an
 assignment only if an unmodified client of an existing service cannot
 interact with it.
 
-In the decade since {{RFC7605}} was published in 2015, HTTP has become the de
-facto substrate for application protocol design -- a development that
-{{RFC9205}} both documents and embraces. Section 7.1's observation that "an automated system that happens to
-use HTTP framing -- but is not primarily accessed by a browser -- might be a new
-service" was intended to leave room for novel cases. The evolution of and
-investment in the HTTP ecosystem since then has only made the use of HTTP as a
-substrate more attractive -- the benefits outlined in {{RFC9205}} are
-substantial. One practical consequence of this development has been some
-confusion about whether new protocols over HTTP are new protocols in the sense
-of "requiring a port assignment".
+In the decade since that document was published in 2015, HTTP has become an
+overwhelming popular de facto substrate for application protocol design -- a
+development that {{RFC9205}} both documents and embraces. Section 7.1's
+observation that "an automated system that happens to use HTTP framing -- but is
+not primarily accessed by a browser -- might be a new service" was intended to
+leave room for novel cases. The evolution of and investment in the HTTP
+ecosystem since then has only made the use of HTTP and the ecosystem surrounding
+it as a substrate more attractive. One practical consequence of this development
+has been some confusion about whether new protocols over HTTP are new protocols
+in the sense of "requiring a port assignment".
 
 This document clarifies how the {{RFC7605}} Section 7.1 distinctness test
 applies to HTTP-based services, and provides guidance to applicants and
@@ -78,16 +78,16 @@ reviewers on when it is and is not satisfied.
 
 # HTTP as an Application Transport Substrate
 
-HTTP has evolved since its origins as the basis of the World Wide Web.
-HTTP/2 {{RFC9113}} redesigned HTTP's wire format around multiplexed binary
-framing with non-browser use as an explicit design goal; HTTP/3 {{RFC9114}}
-continues this evolution over QUIC. The result is that HTTP has evolved toward a
-general-purpose protocol substrate. {{RFC9205}} provides detailed guidance on
-building new protocols in this way. The benefits are substantial: HTTP-based
-services can leverage existing infrastructure including reverse proxies, load
-balancers, content delivery networks, and firewalls; they interoperate naturally
-with web clients; and they inherit well-established security properties
-including TLS certificate management and authentication frameworks.
+HTTP has evolved since its origins as the basis of the World Wide Web. HTTP/2
+{{RFC9113}} redesigned HTTP's wire format around multiplexed binary framing with
+non-browser use as an explicit design goal; HTTP/3 {{RFC9114}} continues this
+evolution over QUIC. {{RFC9205}} provides detailed guidance on building new
+protocols beyond the web atop HTTP. The benefits of this approach are
+substantial: HTTP-based services can leverage existing infrastructure including
+reverse proxies, load balancers, content delivery networks, and firewalls; they
+interoperate naturally with web clients; and they inherit well-established
+security properties including TLS certificate management and authentication
+frameworks.
 
 The HTTP ecosystem also provides a rich set of mechanisms for service
 differentiation and discovery that do not require dedicated port assignments,
