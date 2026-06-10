@@ -9,8 +9,8 @@ number:
 date:
 consensus: false
 v: 3
-area: "Applications and Real-Time"
-workgroup:
+# area: "Applications and Real-Time"
+# workgroup:
 keyword:
  - HTTP
  - port allocation
@@ -18,8 +18,8 @@ keyword:
  - service registration
 
 venue:
-  github: britram/draft-trammell-443-is-enough
-  latest: https://britram.github.io/draft-trammell-443-is-enough/draft-trammell-443-is-enough.html
+  github: "britram/draft-trammell-443-is-enough"
+  latest: "https://britram.github.io/draft-trammell-443-is-enough/draft-trammell-443-is-enough.html"
 
 author:
  -
@@ -70,7 +70,7 @@ investment in the HTTP ecosystem since then has only made the use of HTTP as a
 substrate more attractive -- the benefits outlined in {{RFC9205}} are
 substantial. One practical consequence of this development has been some
 confusion about whether new protocols over HTTP are new protocols in the sense
-of "requiring a port assignment". 
+of "requiring a port assignment".
 
 This document clarifies how the {{RFC7605}} Section 7.1 distinctness test
 applies to HTTP-based services, and provides guidance to applicants and
@@ -108,7 +108,7 @@ structurally valid and semantically useful responses from the proposed service?
 Service differentiation achieved through URL path structure, HTTP header values,
 Content-Type negotiation, payload schema, or authentication scheme does not
 constitute wire-level distinctness; these are application-layer conventions
-carried within HTTP, not independent protocols. 
+carried within HTTP, not independent protocols.
 
 This does not mean that all HTTP-based protocols are indistinct. Examples that
 might warrant an assignment include: a REST API running over the same TLS
