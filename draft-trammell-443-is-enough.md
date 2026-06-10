@@ -47,44 +47,85 @@ new port assignments, including a test for whether a proposed service is
 distinct from an existing service. It gives the example that "an automated
 system that happens to use HTTP framing -- but is not primarily accessed by a
 browser -- might be a new service." It also might not. This document clarifies
-the application of the RFC 7605 distinctness test to HTTP-based services, in
-light of HTTP's evolution since 2015 into a general-purpose application
-transport substrate, and provides guidance to applicants and reviewers on when
-an HTTP-based service qualifies for a new port assignment and when it does not.
+the application of the distinct-protocol test in RFC 7605 section 7.1 to
+services built on HTTP as a substrate, in light of HTTP's evolution since its
+publication, and provides guidance to applicants and reviewers on when an
+HTTP-based service qualifies for a new port assignment and when it does not.
 
 --- middle
 
 # Introduction
 
-TODO
+TODO: frontmatter, write after the rest is drafted.
 
 # HTTP as an Application Transport Substrate
 
-TODO
+HTTP has evolved significantly since its origins as a document-transfer
+protocol for the World Wide Web. HTTP/2 {{RFC9113}} redesigned HTTP's wire
+format around multiplexed binary framing with non-browser use as an explicit
+design goal; HTTP/3 {{RFC9114}} continues this evolution over QUIC. The
+result is that HTTP has become a general-purpose application transport
+substrate, and {{RFC9205}} provides detailed guidance on building new
+application protocols in this way. The benefits are substantial: HTTP-based
+services can leverage existing infrastructure including reverse proxies, load
+balancers, content delivery networks, and firewalls; they interoperate
+naturally with web clients; and they inherit well-established security
+properties including TLS certificate management and authentication frameworks.
+The HTTP ecosystem also provides a rich set of mechanisms for service
+differentiation and discovery that do not require dedicated port assignments:
+Application-Layer Protocol Negotiation (ALPN) {{RFC7301}} allows protocol
+identification at the TLS layer; Well-Known URIs {{RFC8615}} support service
+discovery at the application layer; and the HTTP Host header combined with
+TLS Server Name Indication allows multiple services to share a single address
+and port. These mechanisms were designed precisely for the world in which HTTP
+serves as a substrate, and their availability directly shapes the analysis of
+whether a new port assignment is warranted.
 
-# Applying the RFC 7605 Distinctness Test to HTTP-based Services
+# Evaluating HTTP-Based Protocols for Distinctness
 
-
-
-# When HTTP-based Services Do Not Qualify for Port Assignment
-
-TODO
-
-# When HTTP-based Services May Qualify for Port Assignment
-
-TODO
-
-# Alternative Registration Mechanisms
-
-TODO
+{{RFC7605}} Section 7.1 establishes the primary test for whether a proposed
+service warrants a new port assignment: can an unmodified client of an
+existing service interact with the proposed service? If so, the proposed
+service is a copy of the existing one and does not merit a new assignment.
+For HTTP-based services, this test is operationalized by asking whether a
+standard HTTP client -- any generic HTTP library or tool, without
+application-specific modifications -- can issue requests to and receive
+structurally valid responses from the proposed service. Service
+differentiation achieved through URL path structure, HTTP header values,
+Content-Type negotiation, payload schema, or authentication scheme does not
+constitute wire-level distinctness; these are application-layer conventions
+carried within HTTP, not independent protocols. A service that satisfies the
+unmodified-client test is an HTTP profile and should use port 443 with
+appropriate service differentiation mechanisms rather than seeking a new port
+assignment. A service may qualify for a new assignment if its wire format is
+genuinely opaque to a standard HTTP client -- for example, because it uses a
+binary content encoding that no generic client library can parse without an
+application-specific codec -- or if it includes a non-HTTP transport
+component on the same port, such as a UDP or SCTP service, whose presence
+means the service as a whole cannot be fully accessed by an unmodified HTTP
+client. In the latter case, a REST API carried as a management or control
+surface alongside a primarily non-HTTP protocol does not disqualify the
+registration; the REST surface follows the port, not the other way around.
 
 # Security Considerations
 
-TODO
+This document provides guidance for port number assignment review and does
+not define a protocol. Directing HTTP-based services to use port 443 rather
+than dedicated port assignments has positive security implications: traffic
+on port 443 is less distinguishable from ordinary HTTPS traffic by network
+observers, TLS deployment is more likely to be properly configured when
+services share the standard HTTPS port and its associated certificate
+management infrastructure, and network operators can apply consistent
+security policy across all services on that port. {{RFC9205}} Section 4.4.3
+notes that deploying an HTTP-based application on a non-default port carries
+privacy implications because the protocol becomes distinguishable from other
+traffic; the guidance in this document is consistent with minimizing that
+distinguishability.
 
 # IANA Considerations
 
-This document has no IANA actions.
+This document has no IANA actions. It is intended as guidance for IANA Transport
+Port Expert Reviewers.
 
 --- back
 
@@ -223,6 +264,4 @@ address explicitly.
 
 # Acknowledgments
 {:numbered="false"}
-
-TODO
 
