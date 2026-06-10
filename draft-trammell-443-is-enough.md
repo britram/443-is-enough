@@ -47,7 +47,7 @@ new port assignments, including a test for whether a proposed service is
 distinct from an existing service. It gives the example that "an automated
 system that happens to use HTTP framing -- but is not primarily accessed by a
 browser -- might be a new service." It also might not. This document clarifies
-the application of the distinct-protocol test in RFC 7605 section 7.1 to
+the application of the distinct-protocol test in {{RFC7605}} Section 7.1 to
 services built on HTTP as a substrate, in light of HTTP's evolution since its
 publication, and provides guidance to applicants and reviewers on when an
 HTTP-based service qualifies for a new port assignment and when it does not.
@@ -61,9 +61,9 @@ including a distinctness test in Section 7.1: a new service merits an
 assignment only if an unmodified client of an existing service cannot
 interact with it.
 
-In the decade since {{RFC7605}} was published in 2015, the trend toward HTTP
-becoming the new narrow point in the Internet protocol hourglass has only
-accelerated. Section 7.1's opservation that "an automated system that happens to
+In the decade since {{RFC7605}} was published in 2015, HTTP has become the de
+facto substrate for application protocol design -- a development that
+{{RFC9205}} both documents and embraces. Section 7.1's observation that "an automated system that happens to
 use HTTP framing -- but is not primarily accessed by a browser -- might be a new
 service" was intended to leave room for novel cases. The evolution of and
 investment in the HTTP ecosystem since then has only made the use of HTTP as a
@@ -78,7 +78,7 @@ reviewers on when it is and is not satisfied.
 
 # HTTP as an Application Transport Substrate
 
-HTTP has evolved since its origins as a the basis of the the World Wide Web.
+HTTP has evolved since its origins as the basis of the World Wide Web.
 HTTP/2 {{RFC9113}} redesigned HTTP's wire format around multiplexed binary
 framing with non-browser use as an explicit design goal; HTTP/3 {{RFC9114}}
 continues this evolution over QUIC. The result is that HTTP has evolved toward a
@@ -93,7 +93,9 @@ The HTTP ecosystem also provides a rich set of mechanisms for service
 differentiation and discovery that do not require dedicated port assignments,
 such as Application-Layer Protocol Negotiation (ALPN) {{RFC7301}} and Well-Known
 URIs {{RFC8615}} supporting service discovery at different points in the
-protocol handshake.
+protocol handshake. A service that requires a new ALPN identifier should
+register it in the IANA TLS ALPN Protocol IDs registry, not seek a new port
+assignment.
 
 # Evaluating HTTP-Based Protocols for Distinctness
 
@@ -103,17 +105,17 @@ service interact with the proposed service? Interoperability implies
 non-distinctness, and a non-distinct protocol does not merit a new assignment.
 
 For HTTP-based services, this test is easy to implement: can an unmodified
-generic HTTP client tool such as curl issue requests to and receive
-structurally valid and semantically useful responses from the proposed service?
-Service differentiation achieved through URL path structure, HTTP header values,
-Content-Type negotiation, payload schema, or authentication scheme does not
-constitute wire-level distinctness; these are application-layer conventions
-carried within HTTP, not independent protocols.
+generic HTTP client tool such as curl issue requests to and receive valid
+responses from the proposed service? Service differentiation achieved through
+URL path structure, HTTP header values, Content-Type negotiation, payload
+schema, or authentication scheme does not constitute wire-level distinctness;
+these are application-layer conventions carried within HTTP, not independent
+protocols.
 
 This does not mean that all HTTP-based protocols are indistinct. Examples that
 might warrant an assignment include: a REST API running over the same TLS
 connection as a protocol with a different wire format, using a protocol-specific
-multiplexing schema; or a protocol running on UDP or SCTP that uses a REST API
+multiplexing scheme; or a protocol running on UDP or SCTP that uses a REST API
 over TCP as a control or management plane. The former would not interoperate
 with an unmodified client, and the latter has incomplete semantics when used as
 such.
