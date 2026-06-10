@@ -1219,13 +1219,13 @@ reviewers on when it is and is not satisfied.<a href="#section-1-3" class="pilcr
 <p id="section-2-1">HTTP has evolved since its origins as the basis of the World Wide Web. HTTP/2
 <span>[<a href="#RFC9113" class="cite xref">RFC9113</a>]</span> redesigned HTTP's wire format around multiplexed binary framing with
 non-browser use as an explicit design goal; HTTP/3 <span>[<a href="#RFC9114" class="cite xref">RFC9114</a>]</span> continues this
-evolution over QUIC. <span>[<a href="#RFC9205" class="cite xref">RFC9205</a>]</span> provides detailed guidance on building new
-protocols beyond the web atop HTTP. The benefits of this approach are
-substantial: HTTP-based services can leverage existing infrastructure including
-reverse proxies, load balancers, content delivery networks, and firewalls; they
-interoperate naturally with web clients; and they inherit well-established
-security properties including TLS certificate management and authentication
-frameworks.<a href="#section-2-1" class="pilcrow">¶</a></p>
+evolution over QUIC <span>[<a href="#RFC9000" class="cite xref">RFC9000</a>]</span>. <span>[<a href="#RFC9205" class="cite xref">RFC9205</a>]</span> provides detailed guidance on
+building new protocols beyond the web atop HTTP. The benefits of this approach
+are substantial: HTTP-based services can leverage existing infrastructure
+including reverse proxies, load balancers, content delivery networks, and
+firewalls; they interoperate naturally with web clients; and they inherit
+well-established security properties including TLS certificate management and
+authentication frameworks.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <p id="section-2-2">The HTTP ecosystem also provides a rich set of mechanisms for service
 differentiation and discovery that do not require dedicated port assignments,
 such as Application-Layer Protocol Negotiation (ALPN) <span>[<a href="#RFC7301" class="cite xref">RFC7301</a>]</span> and Well-Known
@@ -1299,21 +1299,9 @@ Port Expert Reviewers.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
-<dt id="RFC7301">[RFC7301]</dt>
-        <dd>
-<span class="refAuthor">Friedl, S.</span>, <span class="refAuthor">Popov, A.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">E. Stephan</span>, <span class="refTitle">"Transport Layer Security (TLS) Application-Layer Protocol Negotiation Extension"</span>, <span class="seriesInfo">RFC 7301</span>, <span class="seriesInfo">DOI 10.17487/RFC7301</span>, <time datetime="2014-07" class="refDate">July 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7301">https://www.rfc-editor.org/rfc/rfc7301</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC7605">[RFC7605]</dt>
         <dd>
 <span class="refAuthor">Touch, J.</span>, <span class="refTitle">"Recommendations on Using Assigned Transport Port Numbers"</span>, <span class="seriesInfo">BCP 165</span>, <span class="seriesInfo">RFC 7605</span>, <span class="seriesInfo">DOI 10.17487/RFC7605</span>, <time datetime="2015-08" class="refDate">August 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7605">https://www.rfc-editor.org/rfc/rfc7605</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC9110">[RFC9110]</dt>
-        <dd>
-<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9110">https://www.rfc-editor.org/rfc/rfc9110</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC9113">[RFC9113]</dt>
-        <dd>
-<span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">C. Benfield, Ed.</span>, <span class="refTitle">"HTTP/2"</span>, <span class="seriesInfo">RFC 9113</span>, <span class="seriesInfo">DOI 10.17487/RFC9113</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9113">https://www.rfc-editor.org/rfc/rfc9113</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9205">[RFC9205]</dt>
       <dd>
@@ -1332,9 +1320,25 @@ Port Expert Reviewers.<a href="#section-5-1" class="pilcrow">¶</a></p>
         <dd>
 <span class="refAuthor">Fette, I.</span> and <span class="refAuthor">A. Melnikov</span>, <span class="refTitle">"The WebSocket Protocol"</span>, <span class="seriesInfo">RFC 6455</span>, <span class="seriesInfo">DOI 10.17487/RFC6455</span>, <time datetime="2011-12" class="refDate">December 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6455">https://www.rfc-editor.org/rfc/rfc6455</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC7301">[RFC7301]</dt>
+        <dd>
+<span class="refAuthor">Friedl, S.</span>, <span class="refAuthor">Popov, A.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">E. Stephan</span>, <span class="refTitle">"Transport Layer Security (TLS) Application-Layer Protocol Negotiation Extension"</span>, <span class="seriesInfo">RFC 7301</span>, <span class="seriesInfo">DOI 10.17487/RFC7301</span>, <time datetime="2014-07" class="refDate">July 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7301">https://www.rfc-editor.org/rfc/rfc7301</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC8615">[RFC8615]</dt>
         <dd>
 <span class="refAuthor">Nottingham, M.</span>, <span class="refTitle">"Well-Known Uniform Resource Identifiers (URIs)"</span>, <span class="seriesInfo">RFC 8615</span>, <span class="seriesInfo">DOI 10.17487/RFC8615</span>, <time datetime="2019-05" class="refDate">May 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8615">https://www.rfc-editor.org/rfc/rfc8615</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9000">[RFC9000]</dt>
+        <dd>
+<span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">M. Thomson, Ed.</span>, <span class="refTitle">"QUIC: A UDP-Based Multiplexed and Secure Transport"</span>, <span class="seriesInfo">RFC 9000</span>, <span class="seriesInfo">DOI 10.17487/RFC9000</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9000">https://www.rfc-editor.org/rfc/rfc9000</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9110">[RFC9110]</dt>
+        <dd>
+<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9110">https://www.rfc-editor.org/rfc/rfc9110</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9113">[RFC9113]</dt>
+        <dd>
+<span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">C. Benfield, Ed.</span>, <span class="refTitle">"HTTP/2"</span>, <span class="seriesInfo">RFC 9113</span>, <span class="seriesInfo">DOI 10.17487/RFC9113</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9113">https://www.rfc-editor.org/rfc/rfc9113</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9114">[RFC9114]</dt>
       <dd>
