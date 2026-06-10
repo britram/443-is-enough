@@ -31,11 +31,12 @@ normative:
   RFC9110:
   RFC9113:
   RFC7301:
+  RFC9205:
 
 informative:
   RFC8615:
   RFC9114:
-  RFC7540:
+  RFC6455:
 
 ...
 
@@ -63,7 +64,7 @@ TODO
 
 # Applying the RFC 7605 Distinctness Test to HTTP-based Services
 
-TODO
+
 
 # When HTTP-based Services Do Not Qualify for Port Assignment
 
@@ -111,6 +112,32 @@ all are HTTP profiles. The section 7.1 "might be a new service" sentence
 was intended to leave room for this pattern where the wire-level protocol
 is genuinely distinct; in practice it has become the opening every HTTP
 API applicant reaches for.
+
+## Relationship to RFC 9205
+
+RFC 9205 ("Building Protocols with HTTP", Nottingham, 2022) is the IETF's
+canonical guidance on using HTTP as a substrate for application protocols.
+It defines what it means for a protocol to "use HTTP" (including an
+ALPN-based criterion), and addresses port selection -- but more permissively
+than our argument requires. RFC 9205 §4.4.3 says applications "can use the
+applicable default port (80 for HTTP, 443 for HTTPS), or they can be
+deployed upon other ports," and notes that port registration is a legitimate
+way to encourage a specific choice.
+
+This draft complements RFC 9205 rather than contradicting it. RFC 9205
+answers "how do you build a good HTTP-based protocol?"; this document
+answers "does building a good HTTP-based protocol entitle you to a port
+number?" The answer to the second question is no -- and the reason is RFC
+7605, not RFC 9205. The draft should cite RFC 9205 in the introduction,
+acknowledge that it permits port registration for HTTP-based applications,
+and explain that the RFC 7605 distinctness test is the binding constraint
+that RFC 9205 does not address.
+
+RFC 6455 (WebSocket) should be cited as an informative example of the right
+pattern: a protocol that bootstraps over HTTP, becomes wire-distinct after
+the Upgrade handshake (no unmodified HTTP client can exchange WebSocket
+frames), and uses an ALPN identifier -- but not its own port. It runs on 443
+as wss:// alongside HTTPS.
 
 ## The Clarifying Test
 
