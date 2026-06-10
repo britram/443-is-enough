@@ -28,13 +28,14 @@ author:
 
 normative:
   RFC7605:
-  RFC9110:
-  RFC9113:
-  RFC7301:
   RFC9205:
 
 informative:
+  RFC7301:
   RFC8615:
+  RFC9000:
+  RFC9110:
+  RFC9113:
   RFC9114:
   RFC6455:
 
@@ -81,13 +82,13 @@ reviewers on when it is and is not satisfied.
 HTTP has evolved since its origins as the basis of the World Wide Web. HTTP/2
 {{RFC9113}} redesigned HTTP's wire format around multiplexed binary framing with
 non-browser use as an explicit design goal; HTTP/3 {{RFC9114}} continues this
-evolution over QUIC. {{RFC9205}} provides detailed guidance on building new
-protocols beyond the web atop HTTP. The benefits of this approach are
-substantial: HTTP-based services can leverage existing infrastructure including
-reverse proxies, load balancers, content delivery networks, and firewalls; they
-interoperate naturally with web clients; and they inherit well-established
-security properties including TLS certificate management and authentication
-frameworks.
+evolution over QUIC {{RFC9000}}. {{RFC9205}} provides detailed guidance on
+building new protocols beyond the web atop HTTP. The benefits of this approach
+are substantial: HTTP-based services can leverage existing infrastructure
+including reverse proxies, load balancers, content delivery networks, and
+firewalls; they interoperate naturally with web clients; and they inherit
+well-established security properties including TLS certificate management and
+authentication frameworks.
 
 The HTTP ecosystem also provides a rich set of mechanisms for service
 differentiation and discovery that do not require dedicated port assignments,
