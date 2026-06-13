@@ -142,3 +142,9 @@ This document has no IANA actions. It is intended as guidance for IANA Transport
 Port Expert Reviewers.
 
 --- back
+
+# Disclosures
+
+LLM-based tools (Claude Code, Sonnet 4.6) were used in the workflow management,
+reference and archival research, initial draft generation, and editorial review
+of the -00 rev of this document.
