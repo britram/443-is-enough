@@ -3,9 +3,9 @@
 
 
 Network Working Group                                        B. Trammell
-Internet-Draft                                              13 June 2026
+Internet-Draft                                              22 June 2026
 Intended status: Informational                                          
-Expires: 15 December 2026
+Expires: 24 December 2026
 
 
    443 is Enough: Guidance on Port Allocation for HTTP-based Services
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 December 2026.
+   This Internet-Draft will expire on 24 December 2026.
 
 Copyright Notice
 
@@ -76,7 +76,7 @@ Table of Contents
    6.  References
      6.1.  Normative References
      6.2.  Informative References
-   Appendix A.  Disclosures
+   Disclosure
    Author's Address
 
 1.  Introduction
@@ -218,11 +218,11 @@ Table of Contents
    [RFC9114]  Bishop, M., Ed., "HTTP/3", RFC 9114, DOI 10.17487/RFC9114,
               June 2022, <https://www.rfc-editor.org/rfc/rfc9114>.
 
-Appendix A.  Disclosures
+Disclosure
 
    LLM-based tools (Claude Code, Sonnet 4.6) were used in the workflow
    management, reference and archival research, initial draft
-   generation, and editorial review of the -00 rev of this document.
+   generation, and editorial review of this document.
 
 Author's Address
 
