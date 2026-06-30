@@ -188,7 +188,6 @@ Port Expert Reviewers.
 --- back
 
 # Disclosure
-
 {:numbered="false"}
 
 LLM-based tools (Claude Sonnet in Claude Code, Gemini Flash in Antigravity) were
@@ -197,7 +196,6 @@ generation, and editorial review of this document, in part as an evaluation of
 the readiness of these tools for such tasks.
 
 # Acknowledgments
-
 {:numbered="false"}
 
 The author would like to thank Wesley Eddy, Michael Scharf, and Joe Touch for
