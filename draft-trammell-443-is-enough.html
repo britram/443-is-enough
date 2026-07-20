@@ -32,11 +32,11 @@ HTTP-based service qualifies for a new port assignment and when it does not.
     Jinja2 3.1.6
     lxml 6.1.1
     natsort 8.4.0
-    platformdirs 4.10.0
+    platformdirs 4.10.1
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.8.1
+    wcwidth 0.8.2
 -->
 <link href="draft-trammell-443-is-enough.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1055,11 +1055,11 @@ svg {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">443 is Enough</td>
-<td class="right">June 2026</td>
+<td class="right">July 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Trammell</td>
-<td class="center">Expires 24 December 2026</td>
+<td class="center">Expires 21 January 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1072,16 +1072,17 @@ svg {
 <dd class="internet-draft">draft-trammell-443-is-enough-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-22" class="published">22 June 2026</time>
+<time datetime="2026-07-20" class="published">20 July 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-24">24 December 2026</time></dd>
+<dd class="expires"><time datetime="2027-01-21">21 January 2027</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
       <div class="author-name">B. Trammell</div>
+<div class="org">Google Switzerland GmbH</div>
 </div>
 </dd>
 </dl>
@@ -1129,7 +1130,7 @@ HTTP-based service qualifies for a new port assignment and when it does not.<a h
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 24 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 21 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1185,7 +1186,10 @@ HTTP-based service qualifies for a new port assignment and when it does not.<a h
             <p id="section-toc.1-1.7.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-disclosure" class="internal xref">Disclosure</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
 </li>
         </ul>
 </nav>
@@ -1197,9 +1201,8 @@ HTTP-based service qualifies for a new port assignment and when it does not.<a h
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
 <p id="section-1-1"><span>[<a href="#RFC7605" class="cite xref">RFC7605</a>]</span> provides guidance on when a new port assignment is warranted,
-including a distinctness test in Section 7.1: a new service merits an
-assignment only if an unmodified client of an existing service cannot
-interact with it.<a href="#section-1-1" class="pilcrow">¶</a></p>
+including a distinctness test in Section 7.1: a new service merits an assignment
+only if an unmodified client of an existing service cannot interact with it.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">In the decade since that document was published in 2015, HTTP has become an
 overwhelming popular de facto substrate for application protocol design -- a
 development that <span>[<a href="#RFC9205" class="cite xref">RFC9205</a>]</span> both documents and embraces. Section 7.1's
@@ -1212,7 +1215,12 @@ has been some confusion about whether new protocols over HTTP are new protocols
 in the sense of "requiring a port assignment".<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">This document clarifies how the <span>[<a href="#RFC7605" class="cite xref">RFC7605</a>]</span> Section 7.1 distinctness test
 applies to HTTP-based services, and provides guidance to applicants and
-reviewers on when it is and is not satisfied.<a href="#section-1-3" class="pilcrow">¶</a></p>
+reviewers on when it is and is not satisfied. It does not replace <span>[<a href="#RFC7605" class="cite xref">RFC7605</a>]</span>,
+but rather updates its application to reflect the maturity of the HTTP
+ecosystem. Specifically, it addresses how modern deployment patterns—such as
+ubiquitous TLS, SNI, ALPN, and user-space demultiplexing—have resolved the
+practical cohabitation and access control issues that have previously motivated
+requests for dedicated port assignments.<a href="#section-1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="http-as-an-application-transport-substrate">
@@ -1230,13 +1238,24 @@ including reverse proxies, load balancers, content delivery networks, and
 firewalls; they interoperate naturally with web clients; and they inherit
 well-established security properties including TLS certificate management and
 authentication frameworks.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<p id="section-2-2">The HTTP ecosystem also provides a rich set of mechanisms for service
-differentiation and discovery that do not require dedicated port assignments,
-such as Application-Layer Protocol Negotiation (ALPN) <span>[<a href="#RFC7301" class="cite xref">RFC7301</a>]</span> and Well-Known
-URIs <span>[<a href="#RFC8615" class="cite xref">RFC8615</a>]</span> supporting service discovery at different points in the
-protocol handshake. A service that requires a new ALPN identifier should
-register it in the IANA TLS ALPN Protocol IDs registry, not seek a new port
-assignment.<a href="#section-2-2" class="pilcrow">¶</a></p>
+<p id="section-2-2">Operating on standard web ports (80 and 443) also ensures compatibility with
+existing network tooling—such as packet analyzers and diagnostic tools that are
+pre-configured for HTTP—and guarantees traversal through firewalls that restrict
+outbound traffic to standard web ports. Furthermore, reusing these ports
+directly supports transport port conservation, a key goal of <span>[<a href="#RFC7605" class="cite xref">RFC7605</a>]</span>.<a href="#section-2-2" class="pilcrow">¶</a></p>
+<p id="section-2-3">The HTTP ecosystem also provides a rich set of mechanisms for service
+differentiation, discovery, and coexistence that do not require dedicated port
+assignments. Multiple independent services can share ports 80 and 443
+concurrently on the same host using path-based routing (via reverse proxies or
+API gateways), host-based routing (via TLS Server Name Indication (SNI)
+<span>[<a href="#RFC6066" class="cite xref">RFC6066</a>]</span>), or protocol-based multiplexing (via Application-Layer Protocol
+Negotiation (ALPN) <span>[<a href="#RFC7301" class="cite xref">RFC7301</a>]</span>). These user-space demultiplexing techniques are
+standard in modern deployments, resolving the "first binder wins" problem
+inherent in OS-level transport-layer demultiplexing. Additionally, sharing these
+ports allows network operators to leverage Layer 7 security policies (such as
+SNI- or ALPN-based filtering) rather than relying on port-based firewall rules.<a href="#section-2-3" class="pilcrow">¶</a></p>
+<p id="section-2-4">A service that requires a new ALPN identifier should register it in the IANA TLS
+ALPN Protocol IDs registry, not seek a new port assignment.<a href="#section-2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="evaluating-http-based-protocols-for-distinctness">
@@ -1256,12 +1275,32 @@ schema, or authentication scheme does not constitute wire-level distinctness;
 these are application-layer conventions carried within HTTP, not independent
 protocols.<a href="#section-3-2" class="pilcrow">¶</a></p>
 <p id="section-3-3">This does not mean that all HTTP-based protocols are indistinct. Examples that
-might warrant an assignment include: a REST API running over the same TLS
-connection as a protocol with a different wire format, using a protocol-specific
-multiplexing scheme; or a protocol running on UDP or SCTP that uses a REST API
-over TCP as a control or management plane. The former would not interoperate
-with an unmodified client, and the latter has incomplete semantics when used as
-such.<a href="#section-3-3" class="pilcrow">¶</a></p>
+might warrant an assignment include:<a href="#section-3-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3-4.1">
+          <p id="section-3-4.1.1">a REST API running over the same TLS connection as a protocol with a
+different wire format, using a protocol-specific multiplexing scheme; or<a href="#section-3-4.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-4.2">
+          <p id="section-3-4.2.1">a protocol running on UDP or SCTP that uses a REST API over TCP as a control
+or management plane.<a href="#section-3-4.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-3-5">The former would not interoperate with an unmodified client, and the latter has
+incomplete semantics when used as such.<a href="#section-3-5" class="pilcrow">¶</a></p>
+<p id="section-3-6">Similarly, protocols that run natively over QUIC <span>[<a href="#RFC9000" class="cite xref">RFC9000</a>]</span> but do not use HTTP
+semantics are distinct from HTTP. While HTTP/3 <span>[<a href="#RFC9114" class="cite xref">RFC9114</a>]</span> runs over QUIC on
+port 443, a protocol that uses QUIC as a transport layer directly (without the
+HTTP mapping defined in <span>[<a href="#RFC9114" class="cite xref">RFC9114</a>]</span>) is a different service. For example,
+DNS-over-QUIC (DoQ) <span>[<a href="#RFC9250" class="cite xref">RFC9250</a>]</span> runs directly over QUIC and is assigned a
+dedicated port (853), whereas DNS-over-HTTPS (DoH) <span>[<a href="#RFC8484" class="cite xref">RFC8484</a>]</span> layers DNS
+queries within HTTP sessions and runs over standard web ports.<a href="#section-3-6" class="pilcrow">¶</a></p>
+<p id="section-3-7">A related case involves hybrid protocols that use a UDP-based transport for
+primary data transfer but rely on an HTTP-based REST API for control,
+management, or bootstrap operations. In these cases, if the UDP component
+clearly warrants a dedicated port assignment on its own, the protocol designer
+should consider the tradeoffs of using the corresponding TCP port for the
+control plane versus the advantages of using standard web ports.<a href="#section-3-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
@@ -1320,6 +1359,10 @@ Port Expert Reviewers.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
+<dt id="RFC6066">[RFC6066]</dt>
+        <dd>
+<span class="refAuthor">Eastlake 3rd, D.</span>, <span class="refTitle">"Transport Layer Security (TLS) Extensions: Extension Definitions"</span>, <span class="seriesInfo">RFC 6066</span>, <span class="seriesInfo">DOI 10.17487/RFC6066</span>, <time datetime="2011-01" class="refDate">January 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6066">https://www.rfc-editor.org/rfc/rfc6066</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC6455">[RFC6455]</dt>
         <dd>
 <span class="refAuthor">Fette, I.</span> and <span class="refAuthor">A. Melnikov</span>, <span class="refTitle">"The WebSocket Protocol"</span>, <span class="seriesInfo">RFC 6455</span>, <span class="seriesInfo">DOI 10.17487/RFC6455</span>, <time datetime="2011-12" class="refDate">December 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6455">https://www.rfc-editor.org/rfc/rfc6455</a>&gt;</span>. </dd>
@@ -1327,6 +1370,10 @@ Port Expert Reviewers.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <dt id="RFC7301">[RFC7301]</dt>
         <dd>
 <span class="refAuthor">Friedl, S.</span>, <span class="refAuthor">Popov, A.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">E. Stephan</span>, <span class="refTitle">"Transport Layer Security (TLS) Application-Layer Protocol Negotiation Extension"</span>, <span class="seriesInfo">RFC 7301</span>, <span class="seriesInfo">DOI 10.17487/RFC7301</span>, <time datetime="2014-07" class="refDate">July 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7301">https://www.rfc-editor.org/rfc/rfc7301</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8484">[RFC8484]</dt>
+        <dd>
+<span class="refAuthor">Hoffman, P.</span> and <span class="refAuthor">P. McManus</span>, <span class="refTitle">"DNS Queries over HTTPS (DoH)"</span>, <span class="seriesInfo">RFC 8484</span>, <span class="seriesInfo">DOI 10.17487/RFC8484</span>, <time datetime="2018-10" class="refDate">October 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8484">https://www.rfc-editor.org/rfc/rfc8484</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8615">[RFC8615]</dt>
         <dd>
@@ -1345,8 +1392,12 @@ Port Expert Reviewers.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">C. Benfield, Ed.</span>, <span class="refTitle">"HTTP/2"</span>, <span class="seriesInfo">RFC 9113</span>, <span class="seriesInfo">DOI 10.17487/RFC9113</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9113">https://www.rfc-editor.org/rfc/rfc9113</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9114">[RFC9114]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Bishop, M., Ed.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="seriesInfo">RFC 9114</span>, <span class="seriesInfo">DOI 10.17487/RFC9114</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9114">https://www.rfc-editor.org/rfc/rfc9114</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9250">[RFC9250]</dt>
+      <dd>
+<span class="refAuthor">Huitema, C.</span>, <span class="refAuthor">Dickinson, S.</span>, and <span class="refAuthor">A. Mankin</span>, <span class="refTitle">"DNS over Dedicated QUIC Connections"</span>, <span class="seriesInfo">RFC 9250</span>, <span class="seriesInfo">DOI 10.17487/RFC9250</span>, <time datetime="2022-05" class="refDate">May 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9250">https://www.rfc-editor.org/rfc/rfc9250</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
@@ -1358,18 +1409,33 @@ Port Expert Reviewers.<a href="#section-5-1" class="pilcrow">¶</a></p>
       <h2 id="name-disclosure">
 <a href="#name-disclosure" class="section-name selfRef">Disclosure</a>
       </h2>
-<p id="appendix-A-1">LLM-based tools (Claude Code, Sonnet 4.6) were used in the workflow management,
-reference and archival research, initial draft generation, and editorial review
-of this document.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-1">LLM-based tools (Claude Sonnet in Claude Code, Gemini Flash in Antigravity) were
+used in the workflow management, reference and archival research, initial draft
+generation, and editorial review of this document, in part as an evaluation of
+the readiness of these tools for such tasks.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="acknowledgments">
+<section id="appendix-B">
+      <h2 id="name-acknowledgments">
+<a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+      </h2>
+<p id="appendix-B-1">The author would like to thank Wesley Eddy, Michael Scharf, and Joe Touch for
+the feedback and input that improved this document.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">
-<section id="appendix-B">
+<section id="appendix-C">
       <h2 id="name-authors-address">
 <a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
       </h2>
 <address class="vcard">
         <div dir="auto" class="left"><span class="fn nameRole">Brian Trammell</span></div>
+<div dir="auto" class="left"><span class="org">Google Switzerland GmbH</span></div>
+<div dir="auto" class="left"><span class="street-address">Gustav-Gull-Platz 1</span></div>
+<div dir="auto" class="left">CH-<span class="postal-code">8004</span> <span class="locality">Zürich</span>
+</div>
+<div dir="auto" class="left"><span class="country-name">Switzerland</span></div>
 <div class="email">
 <span>Email:</span>
 <a href="mailto:ietf@trammell.ch" class="email">ietf@trammell.ch</a>
