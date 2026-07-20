@@ -24,19 +24,27 @@ venue:
 author:
  -
     fullname: Brian Trammell
+    org: Google Switzerland GmbH
     email: ietf@trammell.ch
+    street: Gustav-Gull-Platz 1
+    code: 8004
+    city: Zürich
+    country: Switzerland
 
 normative:
   RFC7605:
   RFC9205:
 
 informative:
+  RFC6066:
   RFC7301:
+  RFC8484:
   RFC8615:
   RFC9000:
   RFC9110:
   RFC9113:
   RFC9114:
+  RFC9250:
   RFC6455:
 
 ...
@@ -58,9 +66,8 @@ HTTP-based service qualifies for a new port assignment and when it does not.
 # Introduction
 
 {{RFC7605}} provides guidance on when a new port assignment is warranted,
-including a distinctness test in Section 7.1: a new service merits an
-assignment only if an unmodified client of an existing service cannot
-interact with it.
+including a distinctness test in Section 7.1: a new service merits an assignment
+only if an unmodified client of an existing service cannot interact with it.
 
 In the decade since that document was published in 2015, HTTP has become an
 overwhelming popular de facto substrate for application protocol design -- a
@@ -75,7 +82,12 @@ in the sense of "requiring a port assignment".
 
 This document clarifies how the {{RFC7605}} Section 7.1 distinctness test
 applies to HTTP-based services, and provides guidance to applicants and
-reviewers on when it is and is not satisfied.
+reviewers on when it is and is not satisfied. It does not replace {{RFC7605}},
+but rather updates its application to reflect the maturity of the HTTP
+ecosystem. Specifically, it addresses how modern deployment patterns—such as
+ubiquitous TLS, SNI, ALPN, and user-space demultiplexing—have resolved the
+practical cohabitation and access control issues that have previously motivated
+requests for dedicated port assignments.
 
 # HTTP as an Application Transport Substrate
 
@@ -90,13 +102,26 @@ firewalls; they interoperate naturally with web clients; and they inherit
 well-established security properties including TLS certificate management and
 authentication frameworks.
 
+Operating on standard web ports (80 and 443) also ensures compatibility with
+existing network tooling—such as packet analyzers and diagnostic tools that are
+pre-configured for HTTP—and guarantees traversal through firewalls that restrict
+outbound traffic to standard web ports. Furthermore, reusing these ports
+directly supports transport port conservation, a key goal of {{RFC7605}}.
+
 The HTTP ecosystem also provides a rich set of mechanisms for service
-differentiation and discovery that do not require dedicated port assignments,
-such as Application-Layer Protocol Negotiation (ALPN) {{RFC7301}} and Well-Known
-URIs {{RFC8615}} supporting service discovery at different points in the
-protocol handshake. A service that requires a new ALPN identifier should
-register it in the IANA TLS ALPN Protocol IDs registry, not seek a new port
-assignment.
+differentiation, discovery, and coexistence that do not require dedicated port
+assignments. Multiple independent services can share ports 80 and 443
+concurrently on the same host using path-based routing (via reverse proxies or
+API gateways), host-based routing (via TLS Server Name Indication (SNI)
+{{RFC6066}}), or protocol-based multiplexing (via Application-Layer Protocol
+Negotiation (ALPN) {{RFC7301}}). These user-space demultiplexing techniques are
+standard in modern deployments, resolving the "first binder wins" problem
+inherent in OS-level transport-layer demultiplexing. Additionally, sharing these
+ports allows network operators to leverage Layer 7 security policies (such as
+SNI- or ALPN-based filtering) rather than relying on port-based firewall rules.
+
+A service that requires a new ALPN identifier should register it in the IANA TLS
+ALPN Protocol IDs registry, not seek a new port assignment.
 
 # Evaluating HTTP-Based Protocols for Distinctness
 
@@ -114,12 +139,31 @@ these are application-layer conventions carried within HTTP, not independent
 protocols.
 
 This does not mean that all HTTP-based protocols are indistinct. Examples that
-might warrant an assignment include: a REST API running over the same TLS
-connection as a protocol with a different wire format, using a protocol-specific
-multiplexing scheme; or a protocol running on UDP or SCTP that uses a REST API
-over TCP as a control or management plane. The former would not interoperate
-with an unmodified client, and the latter has incomplete semantics when used as
-such.
+might warrant an assignment include:
+
+-   a REST API running over the same TLS connection as a protocol with a
+    different wire format, using a protocol-specific multiplexing scheme; or
+
+-   a protocol running on UDP or SCTP that uses a REST API over TCP as a control
+    or management plane.
+
+The former would not interoperate with an unmodified client, and the latter has
+incomplete semantics when used as such.
+
+Similarly, protocols that run natively over QUIC {{RFC9000}} but do not use HTTP
+semantics are distinct from HTTP. While HTTP/3 {{RFC9114}} runs over QUIC on
+port 443, a protocol that uses QUIC as a transport layer directly (without the
+HTTP mapping defined in {{RFC9114}}) is a different service. For example,
+DNS-over-QUIC (DoQ) {{RFC9250}} runs directly over QUIC and is assigned a
+dedicated port (853), whereas DNS-over-HTTPS (DoH) {{RFC8484}} layers DNS
+queries within HTTP sessions and runs over standard web ports.
+
+A related case involves hybrid protocols that use a UDP-based transport for
+primary data transfer but rely on an HTTP-based REST API for control,
+management, or bootstrap operations. In these cases, if the UDP component
+clearly warrants a dedicated port assignment on its own, the protocol designer
+should consider the tradeoffs of using the corresponding TCP port for the
+control plane versus the advantages of using standard web ports.
 
 # Security Considerations
 
@@ -146,6 +190,13 @@ Port Expert Reviewers.
 # Disclosure
 {:numbered="false"}
 
-LLM-based tools (Claude Code, Sonnet 4.6) were used in the workflow management,
-reference and archival research, initial draft generation, and editorial review
-of this document.
+LLM-based tools (Claude Sonnet in Claude Code, Gemini Flash in Antigravity) were
+used in the workflow management, reference and archival research, initial draft
+generation, and editorial review of this document, in part as an evaluation of
+the readiness of these tools for such tasks.
+
+# Acknowledgments
+{:numbered="false"}
+
+The author would like to thank Wesley Eddy, Michael Scharf, and Joe Touch for
+the feedback and input that improved this document.
