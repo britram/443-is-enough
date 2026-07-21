@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-19T01:15:01.753671+00:00",
+  "timestamp": "2026-07-21T01:15:17.775097+00:00",
   "repo": "britram/draft-trammell-443-is-enough",
   "labels": [
     {
@@ -56,24 +56,26 @@
       "id": "PR_kwDOSj_fV87saf1I",
       "title": "Address comments from iana port reviewers",
       "url": "https://github.com/britram/draft-trammell-443-is-enough/pull/1",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "britram",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "General edit following a thread on the iana port reviewers list. Add advantages of using web ports, clarify the distinction between h3 and QUIC, add discussion of multiplexing and Web approaches to it.",
       "createdAt": "2026-06-30T21:19:49Z",
-      "updatedAt": "2026-06-30T21:21:08Z",
+      "updatedAt": "2026-07-20T14:07:55Z",
       "baseRepository": "britram/draft-trammell-443-is-enough",
       "baseRefName": "main",
       "baseRefOid": "f451eb79619bc29feb2d7a47e4a4278cebbaa787",
       "headRepository": "britram/draft-trammell-443-is-enough",
       "headRefName": "britram-patch-1",
       "headRefOid": "6ac71182f69de6a12fccb2e2f24eceeceb2257db",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-07-20T14:07:55Z",
+      "mergedAt": "2026-07-20T14:07:55Z",
+      "mergedBy": "britram",
+      "mergeCommit": {
+        "oid": "7303f7f4a025875675b94dc650c06589bc5baee0"
+      },
       "comments": [],
       "reviews": []
     }
