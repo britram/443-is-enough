@@ -36,9 +36,11 @@ normative:
   RFC9205:
 
 informative:
+  RFC2782:
   RFC6066:
   RFC7301:
   RFC8484:
+  RFC8552:
   RFC8615:
   RFC9000:
   RFC9110:
@@ -70,7 +72,7 @@ including a distinctness test in Section 7.1: a new service merits an assignment
 only if an unmodified client of an existing service cannot interact with it.
 
 In the decade since that document was published in 2015, HTTP has become an
-overwhelming popular de facto substrate for application protocol design -- a
+overwhelmingly popular de facto substrate for application protocol design -- a
 development that {{RFC9205}} both documents and embraces. Section 7.1's
 observation that "an automated system that happens to use HTTP framing -- but is
 not primarily accessed by a browser -- might be a new service" was intended to
@@ -102,11 +104,15 @@ firewalls; they interoperate naturally with web clients; and they inherit
 well-established security properties including TLS certificate management and
 authentication frameworks.
 
-Operating on standard web ports (80 and 443) also ensures compatibility with
+Operating on standard web ports (80 and 443) also improves compatibility with
 existing network tooling—such as packet analyzers and diagnostic tools that are
-pre-configured for HTTP—and guarantees traversal through firewalls that restrict
-outbound traffic to standard web ports. Furthermore, reusing these ports
-directly supports transport port conservation, a key goal of {{RFC7605}}.
+pre-configured for HTTP—and maximizes the likelihood of traversing firewalls
+that restrict outbound traffic to standard web ports. Such traversal is not
+guaranteed: firewalls increasingly apply deep packet inspection and
+application-behavior analysis to traffic on ports 80 and 443, so using these
+ports offers the best chance of traversal rather than a certainty of it.
+Furthermore, reusing these ports directly supports transport port conservation,
+a key goal of {{RFC7605}}.
 
 The HTTP ecosystem also provides a rich set of mechanisms for service
 differentiation, discovery, and coexistence that do not require dedicated port
@@ -158,12 +164,38 @@ DNS-over-QUIC (DoQ) {{RFC9250}} runs directly over QUIC and is assigned a
 dedicated port (853), whereas DNS-over-HTTPS (DoH) {{RFC8484}} layers DNS
 queries within HTTP sessions and runs over standard web ports.
 
+That a protocol is wire-distinct from HTTP does not by itself imply that it
+requires a new port assignment, however. Because ALPN allows multiple protocols
+to share a port, a non-HTTP protocol running directly over QUIC may coexist with
+HTTP/3 on port 443, selected by its own ALPN identifier rather than "h3"; media
+delivery protocols that can operate either over HTTP/3 or directly over QUIC are
+one example. Such a protocol should generally register an ALPN identifier rather
+than request a port. DoQ's assignment of a dedicated port (853) reflects its
+role as a transport-layer companion to DNS-over-TLS, which already occupies that
+port, rather than a general expectation that protocols running natively over
+QUIC receive dedicated ports.
+
 A related case involves hybrid protocols that use a UDP-based transport for
 primary data transfer but rely on an HTTP-based REST API for control,
 management, or bootstrap operations. In these cases, if the UDP component
 clearly warrants a dedicated port assignment on its own, the protocol designer
 should consider the tradeoffs of using the corresponding TCP port for the
 control plane versus the advantages of using standard web ports.
+
+# Application Naming Beyond Port Numbers
+
+A service built on these substrates may be identified in more than one IANA
+registry: a service name in the Service Name and Transport Protocol Port Number
+Registry (used, for example, in DNS SRV records {{RFC2782}}); an ALPN protocol
+identifier in the TLS Application-Layer Protocol Negotiation (ALPN) Protocol IDs
+registry {{RFC7301}}; and an underscored node name in the Underscored and
+Globally Scoped DNS Node Names registry {{RFC8552}}. These registries evolved
+independently and are not coordinated. A single service may require entries in
+several of them, with no guarantee that a chosen name is available or consistent
+across all three. Rationalizing these namespaces is out of scope for this
+document; the point here is that a port assignment is only one of several forms
+of registration a service may need, and often not the one most relevant to how
+the service is actually selected on the wire.
 
 # Security Considerations
 
@@ -198,5 +230,5 @@ the readiness of these tools for such tasks.
 # Acknowledgments
 {:numbered="false"}
 
-The author would like to thank Wesley Eddy, Michael Scharf, and Joe Touch for
-the feedback and input that improved this document.
+The author would like to thank Wesley Eddy, Michael Scharf, Joe Touch, and
+Christian Huitema for the feedback and input that improved this document.
