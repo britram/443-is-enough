@@ -2,14 +2,14 @@
 
 
 
-Network Working Group                                        B. Trammell
+Transport and Services Working Group                         B. Trammell
 Internet-Draft                                   Google Switzerland GmbH
-Intended status: Informational                              21 July 2026
-Expires: 22 January 2027
+Intended status: Informational                              23 July 2026
+Expires: 24 January 2027
 
 
    443 is Enough: Guidance on Port Allocation for HTTP-based Services
-                  draft-trammell-443-is-enough-latest
+               draft-trammell-tsvwg-443-is-enough-latest
 
 Abstract
 
@@ -30,13 +30,12 @@ About This Document
    This note is to be removed before publishing as an RFC.
 
    The latest revision of this draft can be found at
-   https://britram.github.io/draft-trammell-443-is-enough/draft-
-   trammell-443-is-enough.html.  Status information for this document
-   may be found at https://datatracker.ietf.org/doc/draft-trammell-443-
-   is-enough/.
+   https://britram.github.io/443-is-enough/draft-trammell-tsvwg-443-is-
+   enough.html.  Status information for this document may be found at
+   https://datatracker.ietf.org/doc/draft-trammell-tsvwg-443-is-enough/.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/britram/draft-trammell-443-is-enough.
+   https://github.com/britram/443-is-enough.
 
 Status of This Memo
 
@@ -53,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 January 2027.
+   This Internet-Draft will expire on 24 January 2027.
 
 Copyright Notice
 
@@ -64,7 +63,10 @@ Copyright Notice
    Provisions Relating to IETF Documents (https://trustee.ietf.org/
    license-info) in effect on the date of publication of this document.
    Please review these documents carefully, as they describe your rights
-   and restrictions with respect to this document.
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
 
 Table of Contents
 
