@@ -3,14 +3,13 @@ title: "443 is Enough: Guidance on Port Allocation for HTTP-based Services"
 abbrev: "443 is Enough"
 category: info
 
-docname: draft-trammell-443-is-enough-latest
-submissiontype: independent
+docname: draft-trammell-tsvwg-443-is-enough-latest
 number:
 date:
-consensus: false
+consensus: true
 v: 3
-area: "Web and Internet Transport (WIT)"
-# workgroup:
+area: "Web and Internet Transport"
+workgroup: "Transport and Services Working Group"
 keyword:
  - HTTP
  - port allocation
@@ -18,8 +17,8 @@ keyword:
  - service registration
 
 venue:
-  github: "britram/draft-trammell-443-is-enough"
-  latest: "https://britram.github.io/draft-trammell-443-is-enough/draft-trammell-443-is-enough.html"
+  github: "britram/443-is-enough"
+  latest: "https://britram.github.io/443-is-enough/draft-trammell-tsvwg-443-is-enough.html"
 
 author:
  -
