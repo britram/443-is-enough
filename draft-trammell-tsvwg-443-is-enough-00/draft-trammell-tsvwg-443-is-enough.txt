@@ -1,0 +1,348 @@
+
+
+
+
+Transport and Services Working Group                         B. Trammell
+Internet-Draft                                   Google Switzerland GmbH
+Intended status: Informational                              23 July 2026
+Expires: 24 January 2027
+
+
+   443 is Enough: Guidance on Port Allocation for HTTP-based Services
+               draft-trammell-tsvwg-443-is-enough-latest
+
+Abstract
+
+   [RFC7605] provides guidance on the use of port numbers and the
+   criteria for new port assignments, including a test for whether a
+   proposed service is distinct from an existing service.  It gives the
+   example that "an automated system that happens to use HTTP framing --
+   but is not primarily accessed by a browser -- might be a new
+   service."  It also might not.  This document clarifies the
+   application of the distinct-protocol test in [RFC7605] Section 7.1 to
+   services built on HTTP as a substrate, in light of HTTP's evolution
+   since its publication, and provides guidance to applicants and
+   reviewers on when an HTTP-based service qualifies for a new port
+   assignment and when it does not.
+
+About This Document
+
+   This note is to be removed before publishing as an RFC.
+
+   The latest revision of this draft can be found at
+   https://britram.github.io/443-is-enough/draft-trammell-tsvwg-443-is-
+   enough.html.  Status information for this document may be found at
+   https://datatracker.ietf.org/doc/draft-trammell-tsvwg-443-is-enough/.
+
+   Source for this draft and an issue tracker can be found at
+   https://github.com/britram/443-is-enough.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 24 January 2027.
+
+Copyright Notice
+
+   Copyright (c) 2026 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Introduction
+   2.  HTTP as an Application Transport Substrate
+   3.  Evaluating HTTP-Based Protocols for Distinctness
+   4.  Application Naming Beyond Port Numbers
+   5.  Security Considerations
+   6.  IANA Considerations
+   7.  References
+     7.1.  Normative References
+     7.2.  Informative References
+   Disclosure
+   Acknowledgments
+   Author's Address
+
+1.  Introduction
+
+   [RFC7605] provides guidance on when a new port assignment is
+   warranted, including a distinctness test in Section 7.1: a new
+   service merits an assignment only if an unmodified client of an
+   existing service cannot interact with it.
+
+   In the decade since that document was published in 2015, HTTP has
+   become an overwhelmingly popular de facto substrate for application
+   protocol design -- a development that [RFC9205] both documents and
+   embraces.  Section 7.1's observation that "an automated system that
+   happens to use HTTP framing -- but is not primarily accessed by a
+   browser -- might be a new service" was intended to leave room for
+   novel cases.  The evolution of and investment in the HTTP ecosystem
+   since then has only made the use of HTTP and the ecosystem
+   surrounding it as a substrate more attractive.  One practical
+   consequence of this development has been some confusion about whether
+   new protocols over HTTP are new protocols in the sense of "requiring
+   a port assignment".
+
+   This document clarifies how the [RFC7605] Section 7.1 distinctness
+   test applies to HTTP-based services, and provides guidance to
+   applicants and reviewers on when it is and is not satisfied.  It does
+   not replace [RFC7605], but rather updates its application to reflect
+   the maturity of the HTTP ecosystem.  Specifically, it addresses how
+   modern deployment patterns—such as ubiquitous TLS, SNI, ALPN, and
+   user-space demultiplexing—have resolved the practical cohabitation
+   and access control issues that have previously motivated requests for
+   dedicated port assignments.
+
+2.  HTTP as an Application Transport Substrate
+
+   HTTP has evolved since its origins as the basis of the World Wide
+   Web. HTTP/2 [RFC9113] redesigned HTTP's wire format around
+   multiplexed binary framing with non-browser use as an explicit design
+   goal; HTTP/3 [RFC9114] continues this evolution over QUIC [RFC9000].
+   [RFC9205] provides detailed guidance on building new protocols beyond
+   the web atop HTTP.  The benefits of this approach are substantial:
+   HTTP-based services can leverage existing infrastructure including
+   reverse proxies, load balancers, content delivery networks, and
+   firewalls; they interoperate naturally with web clients; and they
+   inherit well-established security properties including TLS
+   certificate management and authentication frameworks.
+
+   Operating on standard web ports (80 and 443) also improves
+   compatibility with existing network tooling—such as packet analyzers
+   and diagnostic tools that are pre-configured for HTTP—and maximizes
+   the likelihood of traversing firewalls that restrict outbound traffic
+   to standard web ports.  Such traversal is not guaranteed: firewalls
+   increasingly apply deep packet inspection and application-behavior
+   analysis to traffic on ports 80 and 443, so using these ports offers
+   the best chance of traversal rather than a certainty of it.
+   Furthermore, reusing these ports directly supports transport port
+   conservation, a key goal of [RFC7605].
+
+   The HTTP ecosystem also provides a rich set of mechanisms for service
+   differentiation, discovery, and coexistence that do not require
+   dedicated port assignments.  Multiple independent services can share
+   ports 80 and 443 concurrently on the same host using path-based
+   routing (via reverse proxies or API gateways), host-based routing
+   (via TLS Server Name Indication (SNI) [RFC6066]), or protocol-based
+   multiplexing (via Application-Layer Protocol Negotiation (ALPN)
+   [RFC7301]).  These user-space demultiplexing techniques are standard
+   in modern deployments, resolving the "first binder wins" problem
+   inherent in OS-level transport-layer demultiplexing.  Additionally,
+   sharing these ports allows network operators to leverage Layer 7
+   security policies (such as SNI- or ALPN-based filtering) rather than
+   relying on port-based firewall rules.
+
+   A service that requires a new ALPN identifier should register it in
+   the IANA TLS ALPN Protocol IDs registry, not seek a new port
+   assignment.
+
+3.  Evaluating HTTP-Based Protocols for Distinctness
+
+   Section 7.1 of [RFC7605] establishes one useful test for whether a
+   proposed service warrants a new port assignment: can an unmodified
+   client of an existing service interact with the proposed service?
+   Interoperability implies non-distinctness, and a non-distinct
+   protocol does not merit a new assignment.
+
+   For HTTP-based services, this test is easy to implement: can an
+   unmodified generic HTTP client tool such as curl issue requests to
+   and receive valid responses from the proposed service?  Service
+   differentiation achieved through URL path structure, HTTP header
+   values, Content-Type negotiation, payload schema, or authentication
+   scheme does not constitute wire-level distinctness; these are
+   application-layer conventions carried within HTTP, not independent
+   protocols.
+
+   This does not mean that all HTTP-based protocols are indistinct.
+   Examples that might warrant an assignment include:
+
+   *  a REST API running over the same TLS connection as a protocol with
+      a different wire format, using a protocol-specific multiplexing
+      scheme; or
+
+   *  a protocol running on UDP or SCTP that uses a REST API over TCP as
+      a control or management plane.
+
+   The former would not interoperate with an unmodified client, and the
+   latter has incomplete semantics when used as such.
+
+   Similarly, protocols that run natively over QUIC [RFC9000] but do not
+   use HTTP semantics are distinct from HTTP.  While HTTP/3 [RFC9114]
+   runs over QUIC on port 443, a protocol that uses QUIC as a transport
+   layer directly (without the HTTP mapping defined in [RFC9114]) is a
+   different service.  For example, DNS-over-QUIC (DoQ) [RFC9250] runs
+   directly over QUIC and is assigned a dedicated port (853), whereas
+   DNS-over-HTTPS (DoH) [RFC8484] layers DNS queries within HTTP
+   sessions and runs over standard web ports.
+
+   That a protocol is wire-distinct from HTTP does not by itself imply
+   that it requires a new port assignment, however.  Because ALPN allows
+   multiple protocols to share a port, a non-HTTP protocol running
+   directly over QUIC may coexist with HTTP/3 on port 443, selected by
+   its own ALPN identifier rather than "h3"; media delivery protocols
+   that can operate either over HTTP/3 or directly over QUIC are one
+   example.  Such a protocol should generally register an ALPN
+   identifier rather than request a port.  DoQ's assignment of a
+   dedicated port (853) reflects its role as a transport-layer companion
+   to DNS-over-TLS, which already occupies that port, rather than a
+   general expectation that protocols running natively over QUIC receive
+   dedicated ports.
+
+   A related case involves hybrid protocols that use a UDP-based
+   transport for primary data transfer but rely on an HTTP-based REST
+   API for control, management, or bootstrap operations.  In these
+   cases, if the UDP component clearly warrants a dedicated port
+   assignment on its own, the protocol designer should consider the
+   tradeoffs of using the corresponding TCP port for the control plane
+   versus the advantages of using standard web ports.
+
+4.  Application Naming Beyond Port Numbers
+
+   A service built on these substrates may be identified in more than
+   one IANA registry: a service name in the Service Name and Transport
+   Protocol Port Number Registry (used, for example, in DNS SRV records
+   [RFC2782]); an ALPN protocol identifier in the TLS Application-Layer
+   Protocol Negotiation (ALPN) Protocol IDs registry [RFC7301]; and an
+   underscored node name in the Underscored and Globally Scoped DNS Node
+   Names registry [RFC8552].  These registries evolved independently and
+   are not coordinated.  A single service may require entries in several
+   of them, with no guarantee that a chosen name is available or
+   consistent across all three.  Rationalizing these namespaces is out
+   of scope for this document; the point here is that a port assignment
+   is only one of several forms of registration a service may need, and
+   often not the one most relevant to how the service is actually
+   selected on the wire.
+
+5.  Security Considerations
+
+   The intended effect of the guidance given by this document is
+   effectively to reduce port assignments for HTTP-based services,
+   directing these services to use port 443 rather than dedicated port
+   assignments.  This has implications for overall network security:
+   traffic from non-Web HTTP applications running on port 443 is less
+   distinguishable from other traffic in the face of metadata
+   examination.  TLS deployment is more likely to be properly configured
+   when services share the standard HTTPS port and its associated
+   certificate management infrastructure, and network operators can
+   apply consistent security policy across all services on that port.
+   [RFC9205] Section 4.4.3 notes that deploying an HTTP-based
+   application on a non-default port carries privacy implications
+   because the protocol becomes distinguishable from other traffic; the
+   guidance in this document is consistent with minimizing that
+   distinguishability.
+
+6.  IANA Considerations
+
+   This document has no IANA actions.  It is intended as guidance for
+   IANA Transport Port Expert Reviewers.
+
+7.  References
+
+7.1.  Normative References
+
+   [RFC7605]  Touch, J., "Recommendations on Using Assigned Transport
+              Port Numbers", BCP 165, RFC 7605, DOI 10.17487/RFC7605,
+              August 2015, <https://www.rfc-editor.org/rfc/rfc7605>.
+
+   [RFC9205]  Nottingham, M., "Building Protocols with HTTP", BCP 56,
+              RFC 9205, DOI 10.17487/RFC9205, June 2022,
+              <https://www.rfc-editor.org/rfc/rfc9205>.
+
+7.2.  Informative References
+
+   [RFC2782]  Gulbrandsen, A., Vixie, P., and L. Esibov, "A DNS RR for
+              specifying the location of services (DNS SRV)", RFC 2782,
+              DOI 10.17487/RFC2782, February 2000,
+              <https://www.rfc-editor.org/rfc/rfc2782>.
+
+   [RFC6066]  Eastlake 3rd, D., "Transport Layer Security (TLS)
+              Extensions: Extension Definitions", RFC 6066,
+              DOI 10.17487/RFC6066, January 2011,
+              <https://www.rfc-editor.org/rfc/rfc6066>.
+
+   [RFC6455]  Fette, I. and A. Melnikov, "The WebSocket Protocol",
+              RFC 6455, DOI 10.17487/RFC6455, December 2011,
+              <https://www.rfc-editor.org/rfc/rfc6455>.
+
+   [RFC7301]  Friedl, S., Popov, A., Langley, A., and E. Stephan,
+              "Transport Layer Security (TLS) Application-Layer Protocol
+              Negotiation Extension", RFC 7301, DOI 10.17487/RFC7301,
+              July 2014, <https://www.rfc-editor.org/rfc/rfc7301>.
+
+   [RFC8484]  Hoffman, P. and P. McManus, "DNS Queries over HTTPS
+              (DoH)", RFC 8484, DOI 10.17487/RFC8484, October 2018,
+              <https://www.rfc-editor.org/rfc/rfc8484>.
+
+   [RFC8552]  Crocker, D., "Scoped Interpretation of DNS Resource
+              Records through "Underscored" Naming of Attribute Leaves",
+              BCP 222, RFC 8552, DOI 10.17487/RFC8552, March 2019,
+              <https://www.rfc-editor.org/rfc/rfc8552>.
+
+   [RFC8615]  Nottingham, M., "Well-Known Uniform Resource Identifiers
+              (URIs)", RFC 8615, DOI 10.17487/RFC8615, May 2019,
+              <https://www.rfc-editor.org/rfc/rfc8615>.
+
+   [RFC9000]  Iyengar, J., Ed. and M. Thomson, Ed., "QUIC: A UDP-Based
+              Multiplexed and Secure Transport", RFC 9000,
+              DOI 10.17487/RFC9000, May 2021,
+              <https://www.rfc-editor.org/rfc/rfc9000>.
+
+   [RFC9110]  Fielding, R., Ed., Nottingham, M., Ed., and J. Reschke,
+              Ed., "HTTP Semantics", STD 97, RFC 9110,
+              DOI 10.17487/RFC9110, June 2022,
+              <https://www.rfc-editor.org/rfc/rfc9110>.
+
+   [RFC9113]  Thomson, M., Ed. and C. Benfield, Ed., "HTTP/2", RFC 9113,
+              DOI 10.17487/RFC9113, June 2022,
+              <https://www.rfc-editor.org/rfc/rfc9113>.
+
+   [RFC9114]  Bishop, M., Ed., "HTTP/3", RFC 9114, DOI 10.17487/RFC9114,
+              June 2022, <https://www.rfc-editor.org/rfc/rfc9114>.
+
+   [RFC9250]  Huitema, C., Dickinson, S., and A. Mankin, "DNS over
+              Dedicated QUIC Connections", RFC 9250,
+              DOI 10.17487/RFC9250, May 2022,
+              <https://www.rfc-editor.org/rfc/rfc9250>.
+
+Disclosure
+
+   LLM-based tools (Claude Sonnet in Claude Code, Gemini Flash in
+   Antigravity) were used in the workflow management, reference and
+   archival research, initial draft generation, and editorial review of
+   this document, in part as an evaluation of the readiness of these
+   tools for such tasks.
+
+Acknowledgments
+
+   The author would like to thank Wesley Eddy, Michael Scharf, Joe
+   Touch, and Christian Huitema for the feedback and input that improved
+   this document.
+
+Author's Address
+
+   Brian Trammell
+   Google Switzerland GmbH
+   Gustav-Gull-Platz 1
+   CH-8004 Zürich
+   Switzerland
+   Email: ietf@trammell.ch
