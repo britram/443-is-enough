@@ -4,8 +4,8 @@
 
 Transport and Services Working Group                         B. Trammell
 Internet-Draft                                   Google Switzerland GmbH
-Intended status: Informational                              23 July 2026
-Expires: 24 January 2027
+Intended status: Informational                          20 November 2026
+Expires: 24 May 2027
 
 
    443 is Enough: Guidance on Port Allocation for HTTP-based Services
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 January 2027.
+   This Internet-Draft will expire on 24 May 2027.
 
 Copyright Notice
 
@@ -142,19 +142,20 @@ Table of Contents
    differentiation, discovery, and coexistence that do not require
    dedicated port assignments.  Multiple independent services can share
    ports 80 and 443 concurrently on the same host using path-based
-   routing (via reverse proxies or API gateways), host-based routing
-   (via TLS Server Name Indication (SNI) [RFC6066]), or protocol-based
-   multiplexing (via Application-Layer Protocol Negotiation (ALPN)
-   [RFC7301]).  These user-space demultiplexing techniques are standard
-   in modern deployments, resolving the "first binder wins" problem
-   inherent in OS-level transport-layer demultiplexing.  Additionally,
-   sharing these ports allows network operators to leverage Layer 7
-   security policies (such as SNI- or ALPN-based filtering) rather than
-   relying on port-based firewall rules.
+   routing (via reverse proxies or API gateways) or host-based routing
+   (via TLS Server Name Indication (SNI) [RFC6066]), while Application-
+   Layer Protocol Negotiation (ALPN) [RFC7301] selects among versions of
+   HTTP on the same port.  These user-space demultiplexing techniques
+   are standard in modern deployments, resolving the "first binder wins"
+   problem inherent in OS-level transport-layer demultiplexing.
+   Additionally, sharing these ports allows network operators to
+   leverage Layer 7 security policies (such as SNI-based filtering)
+   rather than relying on port-based firewall rules.
 
-   A service that requires a new ALPN identifier should register it in
-   the IANA TLS ALPN Protocol IDs registry, not seek a new port
-   assignment.
+   An HTTP-based service uses the ALPN protocol identifiers that
+   generically identify HTTP ("http/1.1", "h2", "h3"), and needs neither
+   a new port nor a new ALPN identifier.  A protocol that needs an ALPN
+   identifier of its own is, by that fact, not HTTP; see Section 3.
 
 3.  Evaluating HTTP-Based Protocols for Distinctness
 
@@ -173,7 +174,12 @@ Table of Contents
    application-layer conventions carried within HTTP, not independent
    protocols.
 
-   This does not mean that all HTTP-based protocols are indistinct.
+   This test tracks the scope of [RFC9205]: an application that uses
+   HTTP's ports, URI schemes, or ALPN identifiers is using HTTP, and
+   must meet all of HTTP's requirements.  An application that passes the
+   test does.  One that relies on HTTP but changes its operation, for
+   example with application-specific methods, does not; [RFC9205]
+   directs it to establish its own port, and it may merit an assignment.
    Examples that might warrant an assignment include:
 
    *  a REST API running over the same TLS connection as a protocol with
@@ -186,35 +192,47 @@ Table of Contents
    The former would not interoperate with an unmodified client, and the
    latter has incomplete semantics when used as such.
 
-   Similarly, protocols that run natively over QUIC [RFC9000] but do not
-   use HTTP semantics are distinct from HTTP.  While HTTP/3 [RFC9114]
-   runs over QUIC on port 443, a protocol that uses QUIC as a transport
-   layer directly (without the HTTP mapping defined in [RFC9114]) is a
-   different service.  For example, DNS-over-QUIC (DoQ) [RFC9250] runs
-   directly over QUIC and is assigned a dedicated port (853), whereas
-   DNS-over-HTTPS (DoH) [RFC8484] layers DNS queries within HTTP
-   sessions and runs over standard web ports.
+   Further cases illustrate the boundary between "warrants an
+   assignment" and not:
 
-   That a protocol is wire-distinct from HTTP does not by itself imply
-   that it requires a new port assignment, however.  Because ALPN allows
-   multiple protocols to share a port, a non-HTTP protocol running
-   directly over QUIC may coexist with HTTP/3 on port 443, selected by
-   its own ALPN identifier rather than "h3"; media delivery protocols
-   that can operate either over HTTP/3 or directly over QUIC are one
-   example.  Such a protocol should generally register an ALPN
-   identifier rather than request a port.  DoQ's assignment of a
-   dedicated port (853) reflects its role as a transport-layer companion
-   to DNS-over-TLS, which already occupies that port, rather than a
-   general expectation that protocols running natively over QUIC receive
-   dedicated ports.
+   *  A protocol running directly over QUIC [RFC9000], rather than
+      through the HTTP/3 mapping [RFC9114], is distinct from HTTP even
+      though it shares a transport with it.  DNS-over-QUIC (DoQ)
+      [RFC9250] runs directly over QUIC and is assigned port 853; DNS-
+      over-HTTPS (DoH) [RFC8484] carries DNS within HTTP on standard web
+      ports.
 
-   A related case involves hybrid protocols that use a UDP-based
-   transport for primary data transfer but rely on an HTTP-based REST
-   API for control, management, or bootstrap operations.  In these
-   cases, if the UDP component clearly warrants a dedicated port
-   assignment on its own, the protocol designer should consider the
-   tradeoffs of using the corresponding TCP port for the control plane
-   versus the advantages of using standard web ports.
+   *  ALPN makes it technically possible for such a protocol to share
+      port 443 with HTTP.  However, [RFC9205] treats an application on
+      port 443 as using HTTP, which such a protocol is not.  That a
+      protocol could be demultiplexed by ALPN on port 443 is not a
+      reason to deny it a port for which it otherwise qualifies under
+      [RFC7605].
+
+   *  A protocol carried within a WebSocket [RFC6455] or WebTransport
+      [I-D.ietf-webtrans-http3] session uses HTTP only to set up the
+      session, then exchanges messages of its own.  It nevertheless
+      belongs on port 443: the session is established by an HTTP request
+      to an "https" URI and routed like any other HTTP resource, so what
+      appears on the port is HTTP, and the carried protocol is
+      application content, like a payload schema.  These mechanisms are
+      designed to run on HTTP's ports (Section 1.7 of [RFC6455]) so that
+      clients, including Web browsers, can reach a server wherever HTTP
+      can.  The carried protocol is identified by a WebSocket
+      subprotocol name (Section 11.5 of [RFC6455]) or through
+      WebTransport's application protocol negotiation (Section 3.3 of
+      [I-D.ietf-webtrans-http3]), not by a port.
+
+   *  A protocol defined both over HTTP and natively over QUIC, such as
+      a media delivery protocol that can run either over WebTransport or
+      directly over QUIC, is two cases: the variant over HTTP uses port
+      443, as above, and the native variant is evaluated on its own
+      merits.
+
+   *  A protocol whose UDP component warrants its own port, but which
+      uses an HTTP-based REST API for control, management, or bootstrap,
+      should weigh using the corresponding TCP port for the control
+      plane against the advantages of standard web ports.
 
 4.  Application Naming Beyond Port Numbers
 
@@ -269,6 +287,13 @@ Table of Contents
               <https://www.rfc-editor.org/rfc/rfc9205>.
 
 7.2.  Informative References
+
+   [I-D.ietf-webtrans-http3]
+              Frindell, A., Kinnear, E., and V. Vasiliev, "WebTransport
+              over HTTP/3", Work in Progress, Internet-Draft, draft-
+              ietf-webtrans-http3-17, 2 November 2026,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-
+              webtrans-http3-17>.
 
    [RFC2782]  Gulbrandsen, A., Vixie, P., and L. Esibov, "A DNS RR for
               specifying the location of services (DNS SRV)", RFC 2782,
