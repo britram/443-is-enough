@@ -239,10 +239,10 @@ Port Expert Reviewers.
 # Disclosure
 {:numbered="false"}
 
-LLM-based tools (Claude Sonnet in Claude Code, Gemini Flash in Antigravity) were
-used in the workflow management, reference and archival research, initial draft
-generation, and editorial review of this document, in part as an evaluation of
-the readiness of these tools for such tasks.
+LLM-based tools (Claude Code, Antigravity) were used in the workflow management,
+reference and archival research, initial draft generation, and editorial review
+of this document, in part as an evaluation of the readiness of these tools for
+such tasks.
 
 # Acknowledgments
 {:numbered="false"}
