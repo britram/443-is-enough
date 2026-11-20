@@ -131,12 +131,14 @@ Table of Contents
    compatibility with existing network tooling—such as packet analyzers
    and diagnostic tools that are pre-configured for HTTP—and maximizes
    the likelihood of traversing firewalls that restrict outbound traffic
-   to standard web ports.  Such traversal is not guaranteed: firewalls
-   increasingly apply deep packet inspection and application-behavior
-   analysis to traffic on ports 80 and 443, so using these ports offers
-   the best chance of traversal rather than a certainty of it.
-   Furthermore, reusing these ports directly supports transport port
-   conservation, a key goal of [RFC7605].
+   to standard web ports, as is common in enterprise and public access
+   networks.  This matters most for applications that will be used in
+   arbitrary network environments.  Such traversal is not guaranteed:
+   firewalls increasingly apply deep packet inspection and application-
+   behavior analysis to traffic on ports 80 and 443, so using these
+   ports offers the best chance of traversal rather than a certainty of
+   it.  Furthermore, reusing these ports directly supports transport
+   port conservation, a key goal of [RFC7605].
 
    The HTTP ecosystem also provides a rich set of mechanisms for service
    differentiation, discovery, and coexistence that do not require
@@ -150,12 +152,7 @@ Table of Contents
    problem inherent in OS-level transport-layer demultiplexing.
    Additionally, sharing these ports allows network operators to
    leverage Layer 7 security policies (such as SNI-based filtering)
-   rather than relying on port-based firewall rules.  Ambient firewall
-   rules in enterprise and public access networks also lead to HTTP
-   applications on ports 443 and 80 being less likely to experience
-   connectivity issues than applications on bespoke ports, which can be
-   important for applications that will be used in arbitrary
-   environments.
+   rather than relying on port-based firewall rules.
 
    An HTTP-based service uses the ALPN protocol identifiers that
    generically identify HTTP ("http/1.1", "h2", "h3"), and needs neither
