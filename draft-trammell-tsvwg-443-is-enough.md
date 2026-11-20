@@ -120,12 +120,15 @@ assignments. Multiple independent services can share ports 80 and 443
 concurrently on the same host using path-based routing (via reverse proxies or
 API gateways) or host-based routing (via TLS Server Name Indication (SNI)
 {{RFC6066}}), while Application-Layer Protocol Negotiation (ALPN) {{RFC7301}}
-selects among versions of HTTP on the same port. These user-space
-demultiplexing techniques are standard in modern deployments, resolving the
-"first binder wins" problem inherent in OS-level transport-layer
-demultiplexing. Additionally, sharing these ports allows network operators to
-leverage Layer 7 security policies (such as SNI-based filtering) rather than
-relying on port-based firewall rules.
+selects among versions of HTTP on the same port. These user-space demultiplexing
+techniques are standard in modern deployments, resolving the "first binder wins"
+problem inherent in OS-level transport-layer demultiplexing. Additionally,
+sharing these ports allows network operators to leverage Layer 7 security
+policies (such as SNI-based filtering) rather than relying on port-based
+firewall rules. Ambient firewall rules in enterprise and public access networks
+also lead to HTTP applications on ports 443 and 80 being less likely to
+experience connectivity issues than applications on bespoke ports, which can be
+important for applications that will be used in arbitrary environments.
 
 An HTTP-based service uses the ALPN protocol identifiers that generically
 identify HTTP ("http/1.1", "h2", "h3"), and needs neither a new port nor a new
@@ -247,5 +250,6 @@ such tasks.
 # Acknowledgments
 {:numbered="false"}
 
-The author would like to thank Wesley Eddy, Michael Scharf, Joe Touch, and
-Christian Huitema for the feedback and input that improved this document.
+The author would like to thank Wesley Eddy, Michael Scharf, Joe Touch, Christian
+Huitema, Magnus Westerlund, Jonathan Lennox, and Lorenzo Colitti for the
+input and feedback that improved this document.
